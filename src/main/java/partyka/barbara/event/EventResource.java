@@ -1,15 +1,13 @@
 package partyka.barbara.event;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api/")
 public class EventResource {
@@ -30,7 +28,6 @@ public class EventResource {
         return eventRepository.save(event);
     }
 
-    //     @RequestMapping(value = "events/{id}",method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, headers = "Accept=*/*")
     @PutMapping("events/{id}")
     public Event replaceEvent(@RequestBody Event newEvent, @PathVariable Long id) {
 
@@ -52,32 +49,31 @@ public class EventResource {
     }
 
 
-//    @PutMapping("events/{isbn}")
-//    public ResponseEntity<Event> updateEvent(@PathVariable String isbn, @RequestBody Event event) {
-//
-//        Optional<Event> optionalEvent = eventRepository.findByIsbn(isbn);
-//
-//        if (optionalEvent.isPresent()) {
-//            optionalEvent.get().setName(event.getName());
-//            optionalEvent.get().setIsbn(event.getIsbn());
-//            return new ResponseEntity<>(eventRepository.save(optionalEvent.get()), HttpStatus.OK); // 200
-//        }
-//        return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
-//    }
-//
-//    @DeleteMapping("events/{isbn}")
-//    public ResponseEntity<Event> deleteBook(@PathVariable String isbn) {
-//
-//        Optional<Event> optionalEvent = eventRepository.findByIsbn(isbn);
-//
-//        if (optionalEvent.isPresent()) {
-//
-//            optionalEvent.delete(optionalEvent.get());
-//            return new ResponseEntity<>(HttpStatus.OK); //200
-//        }
-//
-//        return new ResponseEntity<>(HttpStatus.NOT_FOUND); //404
-//    }
+    @PutMapping("events/opt/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event event) {
+
+        Optional<Event> optionalEvent = eventRepository.findById(id);
+
+        if (optionalEvent.isPresent()) {
+            optionalEvent.get().setName(event.getName());
+            return new ResponseEntity<>(eventRepository.save(optionalEvent.get()), HttpStatus.OK); // 200
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
+    }
+
+    @DeleteMapping("events/opt/{id}")
+    public ResponseEntity<Event> deleteEventOpt(@PathVariable Long id) {
+
+        Optional<Event> optionalEvent = eventRepository.findById(id);
+
+        if (optionalEvent.isPresent()) {
+
+            eventRepository.delete(optionalEvent.get());
+            return new ResponseEntity<>(HttpStatus.OK); //200
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND); //404
+    }
 
 }
 
