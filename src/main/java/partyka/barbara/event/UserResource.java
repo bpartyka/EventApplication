@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,18 +15,35 @@ import java.util.Optional;
 public class UserResource {
 
     private UserRepository userRepository;
+    private EventRepository eventRepository;
 
-    public UserResource(UserRepository userRepository) {
+    public UserResource(UserRepository userRepository, EventRepository eventRepository) {
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
     }
+
 
     @GetMapping("users")
     public List<User> getUser() {
         return userRepository.findAll();
     }
 
+    @PostMapping("users/ev/{eventId}")
+    public User addUser(@RequestBody User user, @PathVariable(value = "eventId") Long eventId) {
+        Event event = eventRepository.findById(eventId).get();
+        HashSet<Event> events = new HashSet<>(Arrays.asList(event));
+
+user.setEvents(events);
+//        user.setEvents(new HashSet<>(eventRepository.findAll()));
+//        event.setUsers(new HashSet<>(Arrays.asList(user)));
+//        eventRepository.save(event);
+
+        return userRepository.save(user);
+    }
+
     @PostMapping("users")
-    public User addUser(@RequestBody User user) {
+    public User addUser2(@RequestBody User user) {
+
         return userRepository.save(user);
     }
 
