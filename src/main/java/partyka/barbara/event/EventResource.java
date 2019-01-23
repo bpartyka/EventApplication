@@ -23,7 +23,7 @@ public class EventResource {
         return eventRepository.findAll();
     }
 
-    @PostMapping("events")
+    @PostMapping(value = "events")
     public Event addEvent(@RequestBody Event event) {
         return eventRepository.save(event);
     }

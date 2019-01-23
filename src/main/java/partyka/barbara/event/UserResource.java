@@ -28,12 +28,18 @@ public class UserResource {
         return userRepository.findAll();
     }
 
+    @GetMapping("users/byName/{name}")
+    public List<User> getAllUsersByName(@PathVariable(value = "name") String name) {
+
+        return userRepository.findUsersByName(name);
+    }
+
     @PostMapping("users/ev/{eventId}")
     public User addUser(@RequestBody User user, @PathVariable(value = "eventId") Long eventId) {
         Event event = eventRepository.findById(eventId).get();
         HashSet<Event> events = new HashSet<>(Arrays.asList(event));
 
-user.setEvents(events);
+        user.setEvents(events);
 //        user.setEvents(new HashSet<>(eventRepository.findAll()));
 //        event.setUsers(new HashSet<>(Arrays.asList(user)));
 //        eventRepository.save(event);
