@@ -1,9 +1,15 @@
-package partyka.barbara.event;
+package partyka.barbara.event.resource;
 
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import partyka.barbara.event.model.Event;
+import partyka.barbara.event.model.User;
+import partyka.barbara.event.model.dto.UserDTO;
+import partyka.barbara.event.repository.EventRepository;
+import partyka.barbara.event.repository.UserRepository;
+import partyka.barbara.event.service.UserService;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,22 +22,18 @@ public class UserResource {
 
     private UserRepository userRepository;
     private EventRepository eventRepository;
+    private UserService userService;
 
-    public UserResource(UserRepository userRepository, EventRepository eventRepository) {
+    public UserResource(UserRepository userRepository, EventRepository eventRepository, UserService userService) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.userService = userService;
     }
 
 
     @GetMapping("users")
-    public List<User> getUser() {
-        return userRepository.findAll();
-    }
-
-    @GetMapping("users/byName/{name}")
-    public List<User> getAllUsersByName(@PathVariable(value = "name") String name) {
-
-        return userRepository.findUsersByName(name);
+    public List<UserDTO> getUser() {
+        return userService.findAll();
     }
 
     @PostMapping("users/ev/{eventId}")
@@ -40,9 +42,7 @@ public class UserResource {
         HashSet<Event> events = new HashSet<>(Arrays.asList(event));
 
         user.setEvents(events);
-//        user.setEvents(new HashSet<>(eventRepository.findAll()));
-//        event.setUsers(new HashSet<>(Arrays.asList(user)));
-//        eventRepository.save(event);
+
 
         return userRepository.save(user);
     }

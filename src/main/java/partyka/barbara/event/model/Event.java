@@ -1,25 +1,30 @@
-package partyka.barbara.event;
+package partyka.barbara.event.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name="events")
+@Table(name = "events")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
 public class Event {
+    @ManyToMany(mappedBy = "events", fetch = FetchType.EAGER)
+    public Set<User> users;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "events", fetch = FetchType.EAGER)
-    public Set<User> users;
-
     public Event() {
+    }
+
+    public Event(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {

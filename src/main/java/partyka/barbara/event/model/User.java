@@ -1,12 +1,13 @@
-package partyka.barbara.event;
+package partyka.barbara.event.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
@@ -22,9 +23,9 @@ public class User {
     @JoinTable(name = "user_event", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
 
     private Set<Event> events;
+
     public User() {
     }
-
 
 
     public Long getId() {

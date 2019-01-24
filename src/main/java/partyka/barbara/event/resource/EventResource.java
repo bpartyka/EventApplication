@@ -1,8 +1,10 @@
-package partyka.barbara.event;
+package partyka.barbara.event.resource;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import partyka.barbara.event.model.Event;
+import partyka.barbara.event.repository.EventRepository;
 
 import java.util.List;
 import java.util.Optional;
