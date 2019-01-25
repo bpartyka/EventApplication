@@ -36,19 +36,28 @@ public class UserResource {
         return userService.findAll();
     }
 
+    @GetMapping("users/{userName}")
+    public List<UserDTO> getUsersByName(@PathVariable String userName) {
+        return userService.findAllByName(userName);
+    }
+
     @PostMapping("users/ev/{eventId}")
-    public User addUser(@RequestBody User user, @PathVariable(value = "eventId") Long eventId) {
-        Event event = eventRepository.findById(eventId).get();
-        HashSet<Event> events = new HashSet<>(Arrays.asList(event));
+    public ResponseEntity<User> addUser(@RequestBody User user, @PathVariable(value = "eventId") Long eventId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
 
-        user.setEvents(events);
+        if (optionalEvent.isPresent()) {
+            HashSet<Event> events = new HashSet<>(Arrays.asList(optionalEvent.get()));
+            user.setEvents(events);
+            userRepository.save(user);
 
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        }
 
-        return userRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("users")
-    public User addUser2(@RequestBody User user) {
+    public User addUser(@RequestBody User user) {
 
         return userRepository.save(user);
     }
@@ -88,16 +97,8 @@ public class UserResource {
 
     @DeleteMapping("users/opt/{id}")
     public ResponseEntity<User> deleteUserOpt(@PathVariable Long id) {
-
-        Optional<User> optionalUser = userRepository.findById(id);
-
-        if (optionalUser.isPresent()) {
-
-            userRepository.delete(optionalUser.get());
-            return new ResponseEntity<>(HttpStatus.OK); //200
-        }
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND); //404
+        return userService.deleteById(id) ?
+                new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
